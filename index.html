@@ -372,6 +372,16 @@
     .footer-inner { display: flex; align-items: center; justify-content: space-between; }
     .footer-email { color: #63748C; text-decoration: none; }
     .footer-email:hover { color: var(--blue); }
+    #contact { display: inline-block; padding: 2px 8px; margin: -2px -8px; border-radius: 999px; }
+    .neon-flash { animation: neon-flash 2.4s ease-out; }
+    @keyframes neon-flash {
+      0%   { background-color: transparent; box-shadow: 0 0 0 0 rgba(255, 214, 0, 0); }
+      8%   { background-color: #FFF3A3; box-shadow: 0 0 6px 2px #FFE14D, 0 0 18px 6px rgba(255, 214, 0, .75), 0 0 36px 12px rgba(255, 214, 0, .4); }
+      16%  { background-color: #FFF8C7; box-shadow: 0 0 4px 1px #FFE14D, 0 0 10px 3px rgba(255, 214, 0, .45), 0 0 20px 6px rgba(255, 214, 0, .2); }
+      26%  { background-color: #FFF3A3; box-shadow: 0 0 6px 2px #FFE14D, 0 0 18px 6px rgba(255, 214, 0, .75), 0 0 36px 12px rgba(255, 214, 0, .4); }
+      55%  { background-color: #FFF3A3; box-shadow: 0 0 6px 2px #FFE14D, 0 0 16px 5px rgba(255, 214, 0, .6), 0 0 30px 10px rgba(255, 214, 0, .3); }
+      100% { background-color: transparent; box-shadow: 0 0 0 0 rgba(255, 214, 0, 0); }
+    }
 
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -387,6 +397,7 @@
       </a>
       <nav class="nav" aria-label="Main navigation">
         <a class="nav-link" href="#how">How it works</a>
+        <a class="nav-link" href="#contact" data-contact>Contact us</a>
         <a class="button" href="https://beta.krugalia.com">Try the beta <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9M8 3.5 12.5 8 8 12.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </nav>
     </div>
@@ -606,7 +617,7 @@
         <h2 id="final-title">Planning a tricky trip? Try it on a real one.</h2>
         <p>Tell Krugalia where you need to go. Start with the journey, not the booking form.</p>
         <a class="button" href="https://beta.krugalia.com">Try the beta <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9M8 3.5 12.5 8 8 12.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-        <p class="feedback">Feedback and partnerships: <a href="mailto:hello@krugalia.com">hello@krugalia.com</a></p>
+        <p class="feedback">Feedback and partnerships: <a id="contact" href="mailto:hello@krugalia.com">hello@krugalia.com</a></p>
       </div>
     </section>
   </main>
@@ -617,5 +628,24 @@
       <a class="footer-email" href="mailto:hello@krugalia.com">hello@krugalia.com</a>
     </div>
   </footer>
+  <script>
+    document.querySelector('[data-contact]').addEventListener('click', function (e) {
+      e.preventDefault();
+      var email = document.getElementById('contact');
+      var flash = function () {
+        email.classList.remove('neon-flash');
+        void email.offsetWidth;
+        email.classList.add('neon-flash');
+      };
+      scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+      // Flash only after scrolling has fully stopped: scrollY unchanged for ~150 ms.
+      var lastY = -1, stableSince = performance.now();
+      (function waitForStop(now) {
+        if (scrollY !== lastY) { lastY = scrollY; stableSince = now; }
+        if (now - stableSince > 150) return flash();
+        requestAnimationFrame(waitForStop);
+      })(performance.now());
+    });
+  </script>
 </body>
 </html>
